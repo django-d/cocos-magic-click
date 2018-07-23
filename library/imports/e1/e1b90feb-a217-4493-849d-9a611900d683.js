@@ -169,7 +169,6 @@ var Helloworld = /** @class */ (function (_super) {
         this.songsan(node, num, diff);
     };
     Helloworld.prototype.songsan = function (node, num, diff) {
-        var _this = this;
         if (this.spacingX === node.width / 2)
             return;
         this.reset();
@@ -179,30 +178,56 @@ var Helloworld = /** @class */ (function (_super) {
         var a = 0;
         var b = 0;
         var comp = node.getComponent(ItemE_1.default);
+        // 根据数量变化
+        var index = this.cards.children.indexOf(node);
+        var songsanNodes = [this.cards.children[index - 1], node, this.cards.children[index + 1]];
+        /**
+         * 需要松散的数量
+         */
+        var n = songsanNodes.length;
+        var songsanLen = n * node.width / 2;
+        // node.width是保证最后一张牌也在范围内 不然最后一张牌就出去了
+        var jinLen = (this.cards.width - songsanLen - node.width) / (this.cards.children.length - 1 - n);
+        var xRecord = 0;
+        console.log('节点宽度', this.cards.width);
         targetCards.forEach(function (n, i) {
-            n.stopAllActions();
-            var comp1 = n.getComponent(ItemE_1.default);
             if (i === 0) {
-                x = -n.width / 2;
-                width = n.width;
+                n.x = xRecord;
             }
             else {
-                if (comp.group === comp1.group) {
-                    n.x = i * (_this.spacingX + diff);
-                    a++;
+                if (songsanNodes.indexOf(targetCards[i - 1]) >= 0) {
+                    xRecord += node.width / 2;
                 }
                 else {
-                    console.log(a);
-                    var xx = i * (_this.spacingX) + (a + 1) * diff;
-                    n.x = xx - (b * ((a + 1) * diff / (targetCards.length - 1 - num)));
-                    b++;
+                    xRecord += jinLen;
                 }
-                x -= _this.spacingX / 2;
-                width += _this.spacingX;
+                n.x = xRecord;
             }
         });
-        this.cards.width = width;
-        this.cards.x = x;
+        console.log('节点宽度', this.cards.width);
+        // targetCards.forEach((n, i) => {
+        //     n.stopAllActions();
+        //     const comp1 = n.getComponent(ItemE);
+        //     if (i === 0) {
+        //         x = - n.width / 2;
+        //         width = n.width;
+        //     }
+        //     else {
+        //         if (comp.group === comp1.group) {
+        //             n.x = i * (this.spacingX + diff);
+        //             a++;
+        //         } else {
+        //             console.log(a);
+        //             const xx = i * (this.spacingX) + (a + 1) * diff;
+        //             n.x = xx - (b * ((a + 1) * diff / (targetCards.length - 1 - num)));
+        //             b++;
+        //         }
+        //         x -= this.spacingX / 2;
+        //         width += this.spacingX;
+        //     }
+        // });
+        // this.cards.width = width;
+        // this.cards.x = x;
     };
     Helloworld.prototype.upTo20 = function (node) {
         var comp = node.getComponent(ItemE_1.default);

@@ -185,30 +185,56 @@ export default class Helloworld extends cc.Component {
         let a = 0;
         let b = 0;
         const comp = node.getComponent(ItemE);
+        // 根据数量变化
+        const index = this.cards.children.indexOf(node);
+        // TODO: 需要传进来有几个要散开的
+        const songsanNodes = [this.cards.children[index - 1], node, this.cards.children[index + 1]];
+        /**
+         * 需要松散的数量
+         */
+        const n = songsanNodes.length;
+        const songsanLen = n * node.width / 2;
+        // node.width是保证最后一张牌也在范围内 不然最后一张牌就出去了
+        const jinLen = (this.cards.width - songsanLen - node.width) / (this.cards.children.length - 1 - n)
+        let xRecord = 0;
+        console.log('节点宽度', this.cards.width)
         targetCards.forEach((n, i) => {
-            n.stopAllActions();
-            const comp1 = n.getComponent(ItemE);
             if (i === 0) {
-                x = - n.width / 2;
-                width = n.width;
-            }
-            else {
-                if (comp.group === comp1.group) {
-                    n.x = i * (this.spacingX + diff);
-                    a++;
+                n.x = xRecord;
+            } else {
+                if (songsanNodes.indexOf(targetCards[ i-1 ]) >= 0) {
+                    xRecord += node.width / 2;
                 } else {
-                    console.log(a);
-                    const xx = i * (this.spacingX) + (a + 1) * diff;
-
-                    n.x = xx - (b * ((a + 1) * diff / (targetCards.length - 1 - num)));
-                    b++;
+                    xRecord += jinLen;
                 }
-                x -= this.spacingX / 2;
-                width += this.spacingX;
+                n.x = xRecord;
             }
-        });
-        this.cards.width = width;
-        this.cards.x = x;
+        })
+        console.log('节点宽度', this.cards.width)
+        // targetCards.forEach((n, i) => {
+        //     n.stopAllActions();
+        //     const comp1 = n.getComponent(ItemE);
+        //     if (i === 0) {
+        //         x = - n.width / 2;
+        //         width = n.width;
+        //     }
+        //     else {
+        //         if (comp.group === comp1.group) {
+        //             n.x = i * (this.spacingX + diff);
+        //             a++;
+        //         } else {
+        //             console.log(a);
+        //             const xx = i * (this.spacingX) + (a + 1) * diff;
+
+        //             n.x = xx - (b * ((a + 1) * diff / (targetCards.length - 1 - num)));
+        //             b++;
+        //         }
+        //         x -= this.spacingX / 2;
+        //         width += this.spacingX;
+        //     }
+        // });
+        // this.cards.width = width;
+        // this.cards.x = x;
     }
 
     upTo20(node: cc.Node) {
